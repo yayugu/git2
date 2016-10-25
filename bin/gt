@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+command="$1"
+case $command in
+  amend)
+    shift
+    echo "git add -A ."
+    echo "git --amend --no-edit $@"
+    git add -A .
+    git commit --amend --no-edit $@
+    ;;
+  cb)
+    shift
+    branch=$1
+    exists=`git show-ref refs/heads/$branch`
+    if [ -n "$exists" ]; then
+      git checkout $branch
+    else
+      echo "create branch $branch"
+      git checkout -b $branch
+    fi
+    ;;
+  commit)
+    shift
+    echo "git add -A ."
+    echo "git commit -m $@"
+    git add -A .
+    git commit -m $@
+    ;;
+  diff)
+    git diff HEAD
+    ;;
+  pull)
+    shift
+    current=`git rev-parse --abbrev-ref HEAD`
+    echo "git pull origin $current"
+    git pull origin $current $@
+    ;;
+  push)
+    shift
+    current=`git rev-parse --abbrev-ref HEAD`
+    echo "git push origin $current"
+    git push origin $current $@
+    ;;
+  fixup)
+    shift
+    prev_commit_count=$1
+    git rebase -i HEAD~$prev_commit_count
+    ;;
+  status)
+    git add -A .
+    git status -s
+    ;;
+  *)
+    echo "gt"
+    ;;
+esac
