@@ -22,10 +22,12 @@ case $command in
     ;;
   commit)
     shift
+    message=$1
+    shift
     echo "git add -A ."
-    echo "git commit -m $@"
+    echo "git commit -m \"$message\" $@"
     git add -A .
-    git commit -m $@
+    git commit -m "$message" $@
     ;;
   diff)
     git diff HEAD
